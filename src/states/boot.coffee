@@ -4,7 +4,7 @@
 module.exports = {
 
   preload: (game) ->
-    game.load.image('logo', 'phaser.png')
+    game.load.image 'logo', 'assets/phaser.png'
 
 
   create: (game) ->
@@ -12,8 +12,7 @@ module.exports = {
     logo.anchor.setTo 0.5, 0.5
     buttonStyle = { font: "65px Arial", fill: "#ff0044", align: "center" }
     start = game.add.labelButton game.world.centerX, 3/4*game.world.height, null, 'Play', buttonStyle, ()->
-      log 'start main'
-      # TODO game.state.start('some state')
+      game.state.start('main')
 
   update: (game) ->
     # no-op

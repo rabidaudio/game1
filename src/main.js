@@ -7,10 +7,9 @@ window.onload = function(){
 
   require('./libs/LabelButton');
 
-  log(Phaser);
-
   var game = new Phaser.Game(800, 600, Phaser.AUTO, 'my game');
 
   game.state.add('boot', require('./states/boot'));
+  game.state.add('main', require('./states/main'));
   game.state.start('boot');
 }
