@@ -5,7 +5,8 @@
 # But ideally it's each thing's job to keep track of it's own state.
 # Unfortunately, things are so coupled that this is kinda hard
 
-Player = require './player'
+Player = require '../models/player'
+DoubleJumper = require '../models/doubleJumper'
 
 module.exports = class Main
 
@@ -35,17 +36,21 @@ module.exports = class Main
 
     @cursors = game.input.keyboard.createCursorKeys()
 
-    @player = new Player game
+    @player = new DoubleJumper game #new Player game
 
   update: (game) ->
-    game.physics.arcade.collide @player.sprite, @platforms
+    game.physics.arcade.collide @player.sprite, @platforms, @player.onCollision
 
-    if !@player.isFlying()
+    if @player.isFlying()
+      @player.faceLeft() if @cursors.left.isDown
+      @player.faceRight() if @cursors.right.isDown
+      @player.jump() if @cursors.up.isDown and @player.canDoubleJump()
+
+    else
       if @cursors.left.isDown
         @player.moveLeft() 
       else if @cursors.right.isDown
         @player.moveRight() 
       else
         @player.stop()
-      if @cursors.up.isDown
-        @player.jump()
+      @player.jump() if @cursors.up.isDown

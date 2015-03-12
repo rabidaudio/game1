@@ -12,21 +12,33 @@ module.exports = class Player
     @sprite.animations.add 'left', [0, 1, 2, 3], 10, true
     @sprite.animations.add 'right', [5, 6, 7, 8], 10, true
 
-  moveLeft: () ->
+  moveLeft: ->
     @sprite.body.velocity.x = -150
     @sprite.animations.play 'left'
 
-  moveRight: () ->
+  moveRight: ->
     @sprite.body.velocity.x = 150
     @sprite.animations.play 'right'
 
-  stop: () ->
+  faceLeft: ->
+    @sprite.frame = 1
+
+  faceRight: ->
+    @sprite.frame = 6
+
+  stop: ->
     @sprite.body.velocity.x = 0
     @sprite.animations.stop()
     @sprite.frame = 4
 
-  jump: () ->
+  jump: ->
     @sprite.body.velocity.y = -350
 
-  isFlying: () ->
+  isFlying: ->
     !@sprite.body.touching.down
+
+  canDoubleJump: ->
+    false
+
+  onCollision: =>
+    # no-op
