@@ -1,39 +1,11 @@
 
 # Main State
 
-class Player
-  constructor: (game) ->
-    @sprite = game.add.sprite 32, game.world.height - 150, 'dude'
-    game.physics.arcade.enable @sprite
-    @sprite.body.bounce.y = 0.2
-    @sprite.body.gravity.y = 300
-    @sprite.body.collideWorldBounds = true
-    @sprite.animations.add 'left', [0, 1, 2, 3], 10, true
-    @sprite.animations.add 'right', [5, 6, 7, 8], 10, true
+# It's main's job to hold instances of things (player, platform, etc).
+# But ideally it's each thing's job to keep track of it's own state.
+# Unfortunately, things are so coupled that this is kinda hard
 
-  movePlayer: (cursors) ->
-    if cursors.left.isDown
-      @sprite.body.velocity.x = -150;
-      @sprite.animations.play 'left'
-    else if cursors.right.isDown
-      @sprite.body.velocity.x = 150;
-      @sprite.animations.play 'right'     
-    else
-      @sprite.animations.stop()
-      @sprite.frame = 4
-
-  update: (cursors) ->
-    if !@isFlying()
-      @sprite.body.velocity.x = 0
-      @movePlayer(cursors)
-      @jump() if (cursors.up.isDown)
-
-  jump: () ->
-    @sprite.body.velocity.y = -350
-
-  isFlying: () ->
-    !@sprite.body.touching.down
-
+Player = require './player'
 
 module.exports = class Main
 
@@ -42,7 +14,6 @@ module.exports = class Main
     game.load.image 'ground', 'assets/platform.png'
     game.load.image 'star', 'assets/star.png'
     game.load.spritesheet 'dude', 'assets/dude.png', 32, 48
-
 
   create: (game) ->
     game.physics.startSystem Phaser.Physics.ARCADE
@@ -62,11 +33,19 @@ module.exports = class Main
     ledge2 = @platforms.create -150, 250, 'ground'
     ledge2.body.immovable = true
 
-    @player = new Player game
-
     @cursors = game.input.keyboard.createCursorKeys()
 
+    @player = new Player game
 
   update: (game) ->
     game.physics.arcade.collide @player.sprite, @platforms
-    @player.update(@cursors)
+
+    if !@player.isFlying()
+      if @cursors.left.isDown
+        @player.moveLeft() 
+      else if @cursors.right.isDown
+        @player.moveRight() 
+      else
+        @player.stop()
+      if @cursors.up.isDown
+        @player.jump()
