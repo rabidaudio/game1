@@ -7,7 +7,7 @@
 
 DoubleJumper = require '../models/doubleJumper'
 
-doubleJumpAt = 1
+doubleJumpAt = 10
 
 class Platforms
   constructor: (game) ->
@@ -52,9 +52,9 @@ gameMessage = (game, message, style={ font: "65px Arial", fill: "#ff0044", align
     text = game.add.text game.world.centerX, game.world.centerY, message, style
     text.anchor.set(0.5);
     text.alpha = 1;
-    tween = game.add.tween(text).to { alpha: 0.1 }, 2000, "Linear", true
+    tween = game.add.tween(text).to { alpha: 0 }, 2000, "Linear", true
     tween.onComplete.add (text, tween) =>
-      text.kill
+      text.destroy()
 
 
 module.exports = class Main
