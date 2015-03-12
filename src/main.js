@@ -1,10 +1,16 @@
 
+var DEBUG = true;
+
 window.onload = function(){
 
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: require('./preloader'), create: function(game){
+  window.log = (DEBUG ? console.log.bind(console) : function(){/*no-op*/} );
 
-    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-    logo.anchor.setTo(0.5, 0.5);
+  require('./libs/LabelButton');
 
-  } });
+  log(Phaser);
+
+  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'my game');
+
+  game.state.add('boot', require('./states/boot'));
+  game.state.start('boot');
 }
