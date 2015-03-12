@@ -5,6 +5,7 @@ var gulp = require('gulp')
   , browserify = require('gulp-browserify')
   , uglify = require('gulp-uglify')
   , concat  = require('gulp-concat')
+  , sourcemaps = require('gulp-sourcemaps')
   , coffee = require('gulp-coffee');
 
 
@@ -24,10 +25,10 @@ gulp.task('scripts', ['clean:js'], function () {
       transform: ['caching-coffeeify'],
       extensions: ['.coffee', '.js']
     }))
-    // .pipe(uglify({
-    //   compress: false,
-    // }))
+    .pipe(sourcemaps.init())
+    .pipe(uglify())
     .pipe(concat('build.js'))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.out))
     .on('error', gutil.log);
 });
