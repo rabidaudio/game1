@@ -1,7 +1,41 @@
 
 # Main State
 
-module.exports = {
+class Player
+  constructor: (game) ->
+    @sprite = game.add.sprite 32, game.world.height - 150, 'dude'
+    game.physics.arcade.enable @sprite
+    @sprite.body.bounce.y = 0.2
+    @sprite.body.gravity.y = 300
+    @sprite.body.collideWorldBounds = true
+    @sprite.animations.add 'left', [0, 1, 2, 3], 10, true
+    @sprite.animations.add 'right', [5, 6, 7, 8], 10, true
+
+  movePlayer: (cursors) ->
+    if cursors.left.isDown
+      @sprite.body.velocity.x = -150;
+      @sprite.animations.play 'left'
+    else if cursors.right.isDown
+      @sprite.body.velocity.x = 150;
+      @sprite.animations.play 'right'     
+    else
+      @sprite.animations.stop()
+      @sprite.frame = 4
+
+  update: (cursors) ->
+    if !@isFlying()
+      @sprite.body.velocity.x = 0
+      @movePlayer(cursors)
+      @jump() if (cursors.up.isDown)
+
+  jump: () ->
+    @sprite.body.velocity.y = -350
+
+  isFlying: () ->
+    !@sprite.body.touching.down
+
+
+module.exports = class Main
 
   preload: (game) ->
     game.load.image 'sky', 'assets/sky.png'
@@ -13,7 +47,7 @@ module.exports = {
   create: (game) ->
     game.physics.startSystem Phaser.Physics.ARCADE
     game.add.sprite 0, 0, 'sky'
-    @platforms = game.add.group();
+    @platforms = game.add.group()
 
     @platforms.enableBody = true
 
@@ -28,35 +62,11 @@ module.exports = {
     ledge2 = @platforms.create -150, 250, 'ground'
     ledge2.body.immovable = true
 
-    @player = game.add.sprite 32, game.world.height - 150, 'dude'
-    game.physics.arcade.enable @player
-
-    @player.body.bounce.y = 0.2
-    @player.body.gravity.y = 300
-    @player.body.collideWorldBounds = true
-
-    @player.animations.add 'left', [0, 1, 2, 3], 10, true
-    @player.animations.add 'right', [5, 6, 7, 8], 10, true
+    @player = new Player game
 
     @cursors = game.input.keyboard.createCursorKeys()
 
 
   update: (game) ->
-    game.physics.arcade.collide @player, @platforms
-
-    @player.body.velocity.x = 0
-    @movePlayer()
-    #jump
-    @player.body.velocity.y = -350 if @cursors.up.isDown && @player.body.touching.down
-
-  movePlayer: () ->
-    if @cursors.left.isDown
-      @player.body.velocity.x = -150;
-      @player.animations.play 'left'
-    else if @cursors.right.isDown
-      @player.body.velocity.x = 150;
-      @player.animations.play 'right'     
-    else
-      @player.animations.stop()
-      @player.frame = 4
-} 
+    game.physics.arcade.collide @player.sprite, @platforms
+    @player.update(@cursors)
