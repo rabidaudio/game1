@@ -6,6 +6,8 @@ now = ->
 
 module.exports = class DoubleJumper extends Player
 
+  unlocked: false
+
   jump: ->
     @jumps++
     @last_jump = now()
@@ -15,4 +17,7 @@ module.exports = class DoubleJumper extends Player
     @jumps = 0 if !@isFlying()
 
   canDoubleJump: ->
-    @jumps < 2 and (now() - @last_jump) > 500
+    @unlocked and @jumps < 2 and (now() - @last_jump) > 500
+
+  unlockDoubleJump: ->
+    @unlocked = true

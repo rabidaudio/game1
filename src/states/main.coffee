@@ -5,8 +5,57 @@
 # But ideally it's each thing's job to keep track of it's own state.
 # Unfortunately, things are so coupled that this is kinda hard
 
-Player = require '../models/player'
 DoubleJumper = require '../models/doubleJumper'
+
+doubleJumpAt = 1
+
+class Platforms
+  constructor: (game) ->
+    @group = game.add.group()
+    @group.enableBody = true
+    ground = @group.create 0, game.world.height - 64, 'ground'
+    ground.scale.setTo 2,2
+    ground.body.immovable = true
+    for l in [{x: 400, y: 400},{x:-150, y: 250}]
+      ledge = @group.create l.x, l.y, 'ground'
+      ledge.body.immovable = true
+
+
+class Stars 
+  constructor: (game, count=10) ->
+    @width = game.world.width
+    @group = game.add.group()
+    @group.enableBody = true
+    @makeStar() for i in [1..count]
+
+  makeStar: ->
+    star = @group.create Math.random()*@width, 0, 'star'
+    star.body.gravity.y = 6
+    star.body.bounce.y = 0.7 + Math.random() * 0.2
+
+  onCollect: (player, star) =>
+    star.kill()
+    @makeStar()
+
+class Scoreboard 
+  constructor: (game, @score=0) ->
+    @sprite = game.add.text 16, 16, '', { fontSize: '32px', fill: '#000' }
+
+  text: ->
+    "Score: #{@score}"
+
+  addPoints: (points) ->
+    @score += points
+    @sprite.text = @text()
+
+gameMessage = (game, message, style={ font: "65px Arial", fill: "#ff0044", align: "center" }) ->
+    text = game.add.text game.world.centerX, game.world.centerY, message, style
+    text.anchor.set(0.5);
+    text.alpha = 1;
+    tween = game.add.tween(text).to { alpha: 0.1 }, 2000, "Linear", true
+    tween.onComplete.add (text, tween) =>
+      text.kill
+
 
 module.exports = class Main
 
@@ -19,27 +68,17 @@ module.exports = class Main
   create: (game) ->
     game.physics.startSystem Phaser.Physics.ARCADE
     game.add.sprite 0, 0, 'sky'
-    @platforms = game.add.group()
-
-    @platforms.enableBody = true
-
-    ground = @platforms.create 0, game.world.height - 64, 'ground'
-
-    ground.scale.setTo 2,2
-    ground.body.immovable = true
-
-    ledge1 = @platforms.create 400, 400, 'ground'
-    ledge1.body.immovable = true
-
-    ledge2 = @platforms.create -150, 250, 'ground'
-    ledge2.body.immovable = true
-
+    
+    @platforms = new Platforms game
+    @stars = new Stars game, 5
     @cursors = game.input.keyboard.createCursorKeys()
+    @player = new DoubleJumper game
+    @scoreboard = new Scoreboard game
 
-    @player = new DoubleJumper game #new Player game
 
   update: (game) ->
-    game.physics.arcade.collide @player.sprite, @platforms, @player.onCollision
+    game.physics.arcade.collide @player.sprite, @platforms.group, @player.onCollision
+    game.physics.arcade.collide @stars.group, @platforms.group
 
     if @player.isFlying()
       @player.faceLeft() if @cursors.left.isDown
@@ -54,3 +93,10 @@ module.exports = class Main
       else
         @player.stop()
       @player.jump() if @cursors.up.isDown
+
+    game.physics.arcade.overlap @player.sprite, @stars.group, (player, star)=>
+      @stars.onCollect(player, star)
+      @scoreboard.addPoints(1)
+      if @scoreboard.score is doubleJumpAt
+        @player.unlockDoubleJump()
+        gameMessage game, 'Double Jump Time!'
