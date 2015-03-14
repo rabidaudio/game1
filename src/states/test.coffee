@@ -1,5 +1,5 @@
 
-# Main State
+# Tutorial State
 
 # It's main's job to hold instances of things (player, platform, etc).
 # But ideally it's each thing's job to keep track of it's own state.
@@ -72,11 +72,19 @@ module.exports = class Main
     @platforms = new Platforms game
     @stars = new Stars game, 5
     @cursors = game.input.keyboard.createCursorKeys()
+
+    # paused = false
+    game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add  () ->
+      game.paused = !game.paused
+      # log game.physics.arcade.isPaused
+      # game.physics.arcade.isPaused = !game.physics.arcade.isPaused
+
     @player = new DoubleJumper game
     @scoreboard = new Scoreboard game
 
 
   update: (game) ->
+    return if game.paused
     game.physics.arcade.collide @player.sprite, @platforms.group, @player.onCollision
     game.physics.arcade.collide @stars.group, @platforms.group
 

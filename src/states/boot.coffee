@@ -12,7 +12,7 @@ module.exports = {
     logo.anchor.setTo 0.5, 0.5
     buttonStyle = { font: "65px Arial", fill: "#ff0044", align: "center" }
     start = game.add.labelButton game.world.centerX, 3/4*game.world.height, null, 'Play', buttonStyle, ()->
-      game.state.start('main')
+      game.state.start('test')
 
   update: (game) ->
     # no-op

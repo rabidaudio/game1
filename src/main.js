@@ -10,6 +10,7 @@ window.onload = function(){
   var game = new Phaser.Game(800, 600, Phaser.AUTO, 'my game');
 
   game.state.add('boot', require('./states/boot'));
-  game.state.add('main', require('./states/main'));
-  game.state.start('boot');
+  game.state.add('test', require('./states/test'));
+  // game.state.start('boot');
+  game.state.start('test');
 }
