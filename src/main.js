@@ -11,6 +11,7 @@ window.onload = function(){
 
   game.state.add('boot', require('./states/boot'));
   game.state.add('test', require('./states/test'));
+  game.state.add('tiled', require('./states/tiled'));
   // game.state.start('boot');
-  game.state.start('test');
+  game.state.start('tiled');
 }

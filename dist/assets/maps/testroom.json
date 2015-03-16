@@ -1,0 +1,57 @@
+{ "height":5,
+ "layers":[
+        {
+         "data":[67, 68, 68, 68, 67, 79, 74, 74, 74, 79, 68, 74, 74, 74, 74, 67, 74, 74, 74, 67, 79, 74, 74, 74, 79],
+         "height":5,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }],
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "properties":
+    {
+
+    },
+ "renderorder":"right-down",
+ "tileheight":16,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "image":"..\/tilesetformattedupdate1.png",
+         "imageheight":192,
+         "imagewidth":112,
+         "margin":0,
+         "name":"tilesetformattedupdate1",
+         "properties":
+            {
+
+            },
+         "spacing":1,
+         "tileheight":16,
+         "tilewidth":16
+        }, 
+        {
+         "firstgid":67,
+         "image":"..\/16x16extratiles.png",
+         "imageheight":64,
+         "imagewidth":112,
+         "margin":0,
+         "name":"16x16extratiles",
+         "properties":
+            {
+
+            },
+         "spacing":1,
+         "tileheight":16,
+         "tilewidth":16,
+         "transparentcolor":"#ff00ff"
+        }],
+ "tilewidth":16,
+ "version":1,
+ "width":5
+}
