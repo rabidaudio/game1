@@ -6,7 +6,6 @@ module.exports = {
   preload: (game) ->
     game.load.image 'logo', 'assets/phaser.png'
 
-
   create: (game) ->
     logo = game.add.sprite game.world.centerX, game.world.centerY, 'logo'
     logo.anchor.setTo 0.5, 0.5
